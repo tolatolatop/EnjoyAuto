@@ -1,0 +1,32 @@
+@startuml Plugin
+' 定义插件接口
+
+interface Plugin {
+    + initialize(core: CADCore): void
+    + shutdown(): void
+    + getName(): String
+    + getVersion(): String
+    + getDescription(): String
+}
+
+' 定义扩展的接口（可选，根据插件类型）
+
+interface CommandPlugin extends Plugin {
+    + getCommands(): List<Command>
+}
+
+interface EventListenerPlugin extends Plugin {
+    + registerEventHandlers(eventManager: EventManager): void
+}
+
+interface UIPlugin extends Plugin {
+    + createUIComponents(): void
+}
+
+' 定义关系
+
+Plugin <|-- CommandPlugin
+Plugin <|-- EventListenerPlugin
+Plugin <|-- UIPlugin
+
+@enduml

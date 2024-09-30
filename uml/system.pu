@@ -1,0 +1,72 @@
+@startuml System
+' 定义类和接口
+
+interface User {
+}
+
+interface ToolBox {
+    + click()
+}
+
+interface Handler {
+    + registerToolHandler(toolHandler: ToolHandler)
+    + unregisterToolHandler(toolHandler: ToolHandler)
+}
+
+interface ToolHandler {
+    + handleEvent(event: Event)
+    + getUserData(): UserData
+    + updateUserData(userData: UserData)
+}
+
+interface Workspace {
+    + action()
+    + refreshData()
+    + show()
+}
+
+interface EventManager {
+    + dispatchEvent(event: Event)
+    + registerHandler(eventType: EventType, handler: EventHandler)
+    + unregisterHandler(eventType: EventType, handler: EventHandler)
+}
+
+interface DataManager {
+    + getUserData(): UserData
+    + updateUserData(userData: UserData)
+    + notifyWorkspace()
+}
+
+interface EventHandler {
+    + handleEvent(event: Event)
+}
+
+interface Event {
+    + type: EventType
+    + data: Object
+}
+
+enum EventType {
+    TOOL_EVENT
+    SYSTEM_EVENT
+    OTHER_EVENT
+}
+
+interface UserData {
+    + data: Object
+}
+
+' 定义关系
+
+User --> ToolBox : "clicks"
+User --> Workspace : "performs action"
+ToolBox --> Handler : "registers ToolHandler"
+Handler o--> ToolHandler : "manages"
+Workspace --> EventManager : "sends Event"
+EventManager --> ToolHandler : "dispatches Event"
+ToolHandler ..|> EventHandler
+ToolHandler --> DataManager : "interacts"
+DataManager --> Workspace : "notifies refresh"
+Workspace --> User : "shows updates"
+
+@enduml

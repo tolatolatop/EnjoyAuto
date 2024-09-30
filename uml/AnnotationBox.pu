@@ -1,0 +1,117 @@
+@startuml AnnotationBox
+' 定义类
+
+class Entity {
+    - id: String
+    - properties: Properties
+    + getProperty(key: String): Object
+    + setProperty(key: String, value: Object)
+}
+
+class AnnotationBox {
+    - position: Position
+    - size: Size
+    - name: String
+    - styleId: String
+    - imageResources: List<MatchingImageResource>
+    + getPosition(): Position
+    + setPosition(position: Position)
+    + getSize(): Size
+    + setSize(size: Size)
+    + getName(): String
+    + setName(name: String)
+    + getStyle(): Style
+    + setStyle(style: Style)
+    + getImageResources(): List<MatchingImageResource>
+    + addImageResource(resource: MatchingImageResource)
+    + removeImageResource(resource: MatchingImageResource)
+}
+
+class Style {
+    - styleId: String
+    - name: String
+    - color: Color
+    - font: Font
+    - borderStyle: BorderStyle
+    + getStyleId(): String
+    + getName(): String
+    + setName(name: String)
+    + getColor(): Color
+    + setColor(color: Color)
+    + getFont(): Font
+    + setFont(font: Font)
+    + getBorderStyle(): BorderStyle
+    + setBorderStyle(style: BorderStyle)
+}
+
+class Tag {
+    - tagId: String
+    - name: String
+    - keyValuePairs: Map<String, Object>
+    + getTagId(): String
+    + getName(): String
+    + setName(name: String)
+    + getValue(key: String): Object
+    + setValue(key: String, value: Object)
+    + getAllKeyValuePairs(): Map<String, Object>
+}
+
+class AnnotationBoxTag {
+    - annotationBoxId: String
+    - tagId: String
+}
+
+class MatchingImageResource {
+    - images: List<Image>
+    + getImages(): List<Image>
+    + addImage(image: Image)
+    + removeImage(image: Image)
+}
+
+class Position {
+    - x: Float
+    - y: Float
+    + getX(): Float
+    + setX(x: Float)
+    + getY(): Float
+    + setY(y: Float)
+}
+
+class Size {
+    - width: Float
+    - height: Float
+    + getWidth(): Float
+    + setWidth(width: Float)
+    + getHeight(): Float
+    + setHeight(height: Float)
+}
+
+' 定义关系
+
+Entity <|-- AnnotationBox
+Entity <|-- Style
+Entity <|-- Tag
+AnnotationBox o-- Position
+AnnotationBox o-- Size
+AnnotationBox *-- MatchingImageResource
+
+' AnnotationBox 和 Style 之间的多对一关系
+AnnotationBox "1" --> "0..1" Style : "styleId"
+
+' AnnotationBox 和 Tag 的多对多关系，通过 AnnotationBoxTag 实现
+AnnotationBox "1" -- "0..*" AnnotationBoxTag
+Tag "1" -- "0..*" AnnotationBoxTag
+
+' 标记 AnnotationBoxTag 是一个关联类
+class AnnotationBoxTag <<Association>>
+
+MatchingImageResource *-- "0..*" Image
+
+class Image {
+    - filePath: String
+    + load()
+    + unload()
+}
+
+
+@enduml

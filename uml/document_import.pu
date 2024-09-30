@@ -1,0 +1,35 @@
+@startuml DocumentImport
+title Document Loading and Saving Process
+
+actor User
+
+participant "CADCore" as cadCore
+participant "DocumentManager" as docManager
+participant "SessionManager" as sessionManager
+participant "PersistenceManager" as persistenceManager
+participant "ModelManager" as modelManager
+participant "Document" as document
+
+== Document Loading Process ==
+User -> cadCore: Open Document
+cadCore -> docManager: openDocument(filePath)
+docManager -> persistenceManager: loadData(filePath)
+persistenceManager -> document: create Document data
+persistenceManager --> docManager: Document data
+docManager -> modelManager: initializeModels(document)
+modelManager --> docManager: Models initialized
+docManager -> sessionManager: setCurrentDocument(document)
+cadCore <-- docManager: Document loaded
+
+== Document Saving Process ==
+User -> cadCore: Save Document
+cadCore -> sessionManager: getCurrentDocument()
+sessionManager --> cadCore: document
+cadCore -> docManager: saveDocument(document, filePath)
+docManager -> modelManager: getModelData()
+modelManager --> docManager: Model data
+docManager -> persistenceManager: saveData(document, filePath)
+persistenceManager --> docManager: Save success
+cadCore <-- docManager: Document saved
+
+@enduml

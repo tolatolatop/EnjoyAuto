@@ -1,0 +1,19 @@
+@startuml OptimizedMain
+actor User
+
+User -> ToolBox : Click
+ToolBox -> Handler : Register ToolHandler
+ToolBox -> User : Success
+
+group Action
+    User -> Workspace : Action
+    Workspace -> EventManager : Event
+    EventManager -> ToolHandler : Dispatch Event
+    ToolHandler -> DataManager : GetUserData
+    DataManager -> ToolHandler : UserData
+    ToolHandler -> DataManager : UpdateUserData
+    DataManager -> Workspace : RefreshData
+    Workspace -> User : Show
+end
+
+@enduml

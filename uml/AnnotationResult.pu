@@ -1,0 +1,78 @@
+@startuml AnnotationResult
+' 定义类
+
+class Entity {
+    - id: String
+    - properties: Properties
+    + getProperty(key: String): Object
+    + setProperty(key: String, value: Object)
+}
+
+class AnnotationResult {
+    - position: Position
+    - size: Size
+    - value: String
+    - recognizedImage: RecognizedImage
+    - croppedImage: CroppedImage
+    + getPosition(): Position
+    + setPosition(position: Position)
+    + getSize(): Size
+    + setSize(size: Size)
+    + getRecognizedImage(): RecognizedImage
+    + setRecognizedImage(image: RecognizedImage)
+    + getCroppedImage(): CroppedImage
+    + setCroppedImage(image: CroppedImage)
+}
+
+class Position {
+    - x: Float
+    - y: Float
+    + getX(): Float
+    + setX(x: Float)
+    + getY(): Float
+    + setY(y: Float)
+}
+
+class Size {
+    - width: Float
+    - height: Float
+    + getWidth(): Float
+    + setWidth(width: Float)
+    + getHeight(): Float
+    + setHeight(height: Float)
+}
+
+class Image {
+    - imageId: String
+    - filePath: String
+    + load()
+    + unload()
+    + getImageId(): String
+    + setImageId(imageId: String)
+    + getFilePath(): String
+    + setFilePath(filePath: String)
+}
+
+class RecognizedImage {
+    + processRecognitionData()
+}
+
+class CroppedImage {
+    + processCroppingData()
+}
+
+' 定义关系
+
+Entity <|-- AnnotationResult
+
+AnnotationResult o-- Position
+AnnotationResult o-- Size
+AnnotationResult *-- RecognizedImage
+AnnotationResult *-- CroppedImage
+
+' 继承关系
+
+Image <|-- RecognizedImage
+Image <|-- CroppedImage
+
+@enduml

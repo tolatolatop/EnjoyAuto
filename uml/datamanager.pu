@@ -1,0 +1,131 @@
+@startuml DataManger
+' 定义类
+
+class CADCore {
+    + getModelManager(): ModelManager
+    + getDocumentManager(): DocumentManager
+    + getSessionManager(): SessionManager
+    + getUndoRedoManager(): UndoRedoManager
+    + getPersistenceManager(): PersistenceManager
+    + getPluginManager(): PluginManager
+}
+
+class ModelManager {
+    + createEntity(type: EntityType): Entity
+    + deleteEntity(entity: Entity)
+    + getEntities(): List<Entity>
+}
+
+class DocumentManager {
+    + newDocument(): Document
+    + openDocument(filePath: String): Document
+    + saveDocument(document: Document, filePath: String)
+    + importData(filePath: String): Document
+    + exportData(document: Document, filePath: String)
+}
+
+class SessionManager {
+    + getCurrentDocument(): Document
+    + setCurrentDocument(document: Document)
+    + getSessionState(): SessionState
+    + setSessionState(state: SessionState)
+}
+
+class UndoRedoManager {
+    + executeCommand(command: Command)
+    + undo()
+    + redo()
+}
+
+abstract class Command {
+    + execute()
+    + undo()
+}
+
+class PersistenceManager {
+    + saveData(data: Data, storage: Storage)
+    + loadData(storage: Storage): Data
+}
+
+class PluginManager {
+    + registerPlugin(plugin: Plugin)
+    + unregisterPlugin(plugin: Plugin)
+    + getPlugins(): List<Plugin>
+}
+
+interface Plugin {
+    + initialize(core: CADCore)
+    + shutdown()
+}
+
+class Entity {
+    - id: String
+    - properties: Properties
+    + getProperty(key: String): Object
+    + setProperty(key: String, value: Object)
+}
+
+enum EntityType {
+    Geometry
+    Topology
+    Attribute
+    ' ...其他实体类型
+}
+
+class Document {
+    - entities: List<Entity>
+    + addEntity(entity: Entity)
+    + removeEntity(entity: Entity)
+    + getEntities(): List<Entity>
+}
+
+class SessionState {
+    - selection: Selection
+    - viewParameters: ViewParameters
+    ' ...其他临时状态
+}
+
+class Selection {
+    - selectedEntities: List<Entity>
+    + addEntity(entity: Entity)
+    + removeEntity(entity: Entity)
+    + clear()
+}
+
+class ViewParameters {
+    - cameraPosition: Position
+    - zoomLevel: Float
+    ' ...其他视图参数
+}
+
+class Data {
+    ' ...数据内容
+}
+
+class Storage {
+    ' ...存储介质，如文件路径、数据库连接等
+}
+
+' 定义关系
+
+CADCore o-- ModelManager
+CADCore o-- DocumentManager
+CADCore o-- SessionManager
+CADCore o-- UndoRedoManager
+CADCore o-- PersistenceManager
+CADCore o-- PluginManager
+
+UndoRedoManager *-- Command
+Command <|-- ConcreteCommand
+
+DocumentManager *-- Document
+Document *-- Entity
+ModelManager *-- Entity
+
+SessionManager *-- SessionState
+SessionState *-- Selection
+SessionState *-- ViewParameters
+
+PluginManager *-- Plugin
+
+@enduml
